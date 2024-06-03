@@ -11,11 +11,12 @@ import {
 	predicate,
 	InferType,
 } from "hyperguard";
-import { randomInt } from "crypto";
 import { wordList } from "../lib/wordlist";
 import { getRandomInt } from "../lib/random";
 import { calculateStrength } from "../lib/pin-strength";
 import { entropy } from "../lib/entropy";
+import { FaRegCopy } from "react-icons/fa6";
+import { Toaster, toast } from "react-hot-toast";
 
 const passwordTypes = either(exact("RANDOM"), exact("MEMORABLE"), exact("PIN"));
 
@@ -125,28 +126,31 @@ export default React.memo(function Home() {
 		switch (passwordType) {
 			case "RANDOM":
 				if (entropy(currentPassword) * currentPassword.length < 19)
-					return <>Very weak</>;
+					return <span className="text-red-500">Very weak</span>;
 				if (entropy(currentPassword) * currentPassword.length < 28)
-					return <>Weak</>;
+					return <span className="text-orange-500">Weak</span>;
 				if (entropy(currentPassword) * currentPassword.length < 38)
-					return <>Good</>;
-				return <>Strong</>;
+					return <span className="text-blue-500">Good</span>;
+				return <span className="text-green-500">Strong</span>;
 			case "MEMORABLE":
 				if (entropy(currentPassword) * currentPassword.length < 19)
-					return <>Very weak</>;
+					return <span className="text-red-500">Very weak</span>;
 				if (entropy(currentPassword) * currentPassword.length < 28)
-					return <>Weak</>;
+					return <span className="text-orange-500">Weak</span>;
 				if (entropy(currentPassword) * currentPassword.length < 38)
-					return <>Good</>;
-				return <>Strong</>;
+					return <span className="text-blue-500">Good</span>;
+				return <span className="text-green-500">Strong</span>;
 			case "PIN":
 				switch (calculateStrength(currentPassword)) {
 					case "WEAK":
-						return <>Weak</>;
+						return <span className="text-orange-500">Very weak</span>;
 					case "GOOD":
-						return <>Good</>;
+						return <span className="text-blue-500">Good</span>;
 					case "STRONG":
-						return <>Strong</>;
+						if (entropy(currentPassword) * currentPassword.length > 19) {
+							return <span className="text-green-500">Strong</span>;
+						}
+						return <span className="text-blue-500">Good</span>;
 				}
 		}
 	}
@@ -269,13 +273,27 @@ export default React.memo(function Home() {
 	return (
 		<main className="w-[500px] my-0 mt-10 mx-auto">
 			<div className="bg-slate-50 p-10 rounded-10 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
-				{typesMap.get(passwordType)} strength: {getStrength()}
-				<div className="mb-4">
+				<div className="mb-2">
+					{typesMap.get(passwordType)} strength:{" "}
+					<strong>{getStrength()}</strong>
+				</div>
+				<div className="mb-4 relative">
 					<textarea
+						onMouseDown={(e) => {
+							navigator.clipboard.writeText(currentPassword);
+							toast(`${typesMap.get(passwordType)!} copied to clipboard!`, {
+								duration: 1000,
+							});
+						}}
+						onMouseUp={(e) => {
+							(e.target as HTMLTextAreaElement).select();
+						}}
 						className="text-2xl w-full text-center p-4 rounded-lg border-solid border-2"
-						disabled
 						value={currentPassword}
 					/>
+					<div className="absolute top-2 right-2 p-3 bg-slate-200 rounded-lg border-2 border-solid border-slate-300 opacity-50">
+						<FaRegCopy />
+					</div>
 				</div>
 				<div className="mb-4">
 					<button
@@ -305,6 +323,8 @@ export default React.memo(function Home() {
 				</div>
 				{getOptions()}
 			</div>
+
+			<Toaster />
 		</main>
 	);
 });
