@@ -10015,8 +10015,9 @@ type StrengthType = "WEAK" | "GOOD" | "STRONG";
 export function calculateStrength(pin: string): StrengthType {
 	const first4 = pin.slice(0, 4);
 
-	if (!pinsList.has(pin)) return "STRONG";
+	if (!pinsList.has(first4)) return "STRONG";
 	if (pinsList.get(first4)! > medianOfAllPins) {
+		console.log(pin, "Here", pin.length);
 		if (pin.length > 4) {
 			return "GOOD";
 		}
