@@ -151,61 +151,112 @@ export default React.memo(function Home() {
 		}
 	}
 
+	function getRangeOptions(): {
+		a: number;
+		b: number;
+		unitName: string;
+		value: number;
+		onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	} {
+		switch (passwordType) {
+			case "RANDOM":
+				return {
+					a: minimumPasswordLength,
+					b: 24,
+					unitName: "characters",
+					value: passwordLength,
+					onChange: onPasswordLengthChange,
+				};
+			case "MEMORABLE":
+				return {
+					a: minimumPassphraseLength,
+					b: 12,
+					unitName: "words",
+					value: passphraseLength,
+					onChange: onPassphraseLengthChange,
+				};
+			case "PIN":
+				return {
+					a: minimumPinLength,
+					b: 12,
+					unitName: "digits",
+					value: pinCodeLength,
+					onChange: onPinLengthChange,
+				};
+		}
+	}
+
+	function getLengthSelector() {
+		let { a, b, unitName, value, onChange } = getRangeOptions();
+		if (a > b) {
+			let temp = a;
+			a = b;
+			b = temp;
+		}
+		return (
+			<div>
+				<label className="block mb-2 character-count-selector">
+					{value} {unitName}
+				</label>
+				<input
+					id="character-count-selector"
+					className="w-full"
+					type="range"
+					min={a}
+					max={b}
+					value={value}
+					onChange={onChange}
+				/>
+			</div>
+		);
+	}
+
 	function getOptions() {
 		switch (passwordType) {
 			case "RANDOM":
 				return (
-					<>
-						<input
-							type="range"
-							min={minimumPasswordLength}
-							max={256}
-							value={passwordLength}
-							onChange={onPasswordLengthChange}
-						/>
-						{passwordLength} characters
-						<input
-							id="should-have-numbers"
-							type="checkbox"
-							checked={shouldHaveNumbers}
-							onChange={(e) => setShouldHaveNumbers(!shouldHaveNumbers)}
-						/>
-						<label htmlFor="should-have-numbers">Include numbers</label>{" "}
-						<input
-							id="should-have-symbols"
-							type="checkbox"
-							checked={shouldHaveSymbols}
-							onChange={() => setShouldHaveSymbols(!shouldHaveSymbols)}
-						/>
-						<label htmlFor="should-have-symbols">Include symbols</label>{" "}
-					</>
+					<div>
+						<h2 className="mb-2">Other Options</h2>
+						<div className="inline-block mr-4">
+							<div className="flex items-center">
+								<input
+									className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+									id="should-have-numbers"
+									type="checkbox"
+									checked={shouldHaveNumbers}
+									onChange={() => setShouldHaveNumbers(!shouldHaveNumbers)}
+								/>
+								<label
+									htmlFor="should-have-numbers"
+									className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+								>
+									Include numbers
+								</label>
+							</div>
+						</div>
+						<div className="inline-block">
+							<div className="flex items-center">
+								<input
+									className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+									id="should-have-symbols"
+									type="checkbox"
+									checked={shouldHaveSymbols}
+									onChange={() => setShouldHaveSymbols(!shouldHaveSymbols)}
+								/>
+								<label
+									htmlFor="should-have-symbols"
+									className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+								>
+									Include symbols
+								</label>
+							</div>
+						</div>
+					</div>
 				);
 			case "MEMORABLE":
-				return (
-					<>
-						<input
-							type="range"
-							min={minimumPassphraseLength}
-							max={12}
-							value={passphraseLength}
-							onChange={onPassphraseLengthChange}
-						/>
-						{passphraseLength} words
-					</>
-				);
+				return null;
 			case "PIN":
-				return (
-					<>
-						<input
-							type="range"
-							min={minimumPinLength}
-							max={12}
-							value={pinCodeLength}
-							onChange={onPinLengthChange}
-						/>
-						{pinCodeLength} digits
-					</>
-				);
+				return null;
 		}
 	}
 
@@ -219,20 +270,40 @@ export default React.memo(function Home() {
 		<main className="w-[500px] my-0 mt-10 mx-auto">
 			<div className="bg-slate-50 p-10 rounded-10 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
 				{typesMap.get(passwordType)} strength: {getStrength()}
-				<div>
+				<div className="mb-4">
 					<textarea
-						className="w-full text-center"
+						className="text-2xl w-full text-center p-4 rounded-lg border-solid border-2"
 						disabled
 						value={currentPassword}
 					/>
 				</div>
-				<select value={passwordType} onChange={onPasswordTypeChange}>
-					<option value="RANDOM">Password</option>
-					<option value="MEMORABLE">Memorable</option>
-					<option value="PIN">PIN</option>
-				</select>
+				<div className="mb-4">
+					<button
+						className="inline-block w-full bg-blue-500 text-white px-4 py-2 rounded-full"
+						onClick={getNewPassword}
+					>
+						Regenerate
+					</button>
+				</div>
+				<div className="grid grid-cols-2 gap-4 mb-4">
+					<div>
+						<label className="block mb-2" htmlFor="password-type-selecto">
+							Type
+						</label>
+						<select
+							id="password-type-selector"
+							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+							value={passwordType}
+							onChange={onPasswordTypeChange}
+						>
+							<option value="RANDOM">Password</option>
+							<option value="MEMORABLE">Memorable</option>
+							<option value="PIN">PIN</option>
+						</select>
+					</div>
+					<div>{getLengthSelector()}</div>
+				</div>
 				{getOptions()}
-				<button onClick={getNewPassword}>Generate</button>
 			</div>
 		</main>
 	);
