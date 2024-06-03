@@ -209,17 +209,31 @@ export default React.memo(function Home() {
 		}
 	}
 
+	const typesMap = new Map<PasswordTypes, string>([
+		["RANDOM", "Password"],
+		["MEMORABLE", "Passphrase"],
+		["PIN", "PIN"],
+	]);
+
 	return (
-		<main className="">
-			Strength: {getStrength()}
-			<input type="text" disabled value={currentPassword} />
-			<select value={passwordType} onChange={onPasswordTypeChange}>
-				<option value="RANDOM">Random</option>
-				<option value="MEMORABLE">Memorable</option>
-				<option value="PIN">PIN</option>
-			</select>
-			{getOptions()}
-			<button onClick={getNewPassword}>Generate</button>
+		<main className="w-[500px] my-0 mt-10 mx-auto">
+			<div className="bg-slate-50 p-10 rounded-10 shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px]">
+				{typesMap.get(passwordType)} strength: {getStrength()}
+				<div>
+					<textarea
+						className="w-full text-center"
+						disabled
+						value={currentPassword}
+					/>
+				</div>
+				<select value={passwordType} onChange={onPasswordTypeChange}>
+					<option value="RANDOM">Password</option>
+					<option value="MEMORABLE">Memorable</option>
+					<option value="PIN">PIN</option>
+				</select>
+				{getOptions()}
+				<button onClick={getNewPassword}>Generate</button>
+			</div>
 		</main>
 	);
 });
