@@ -204,7 +204,7 @@ export default React.memo(function Home() {
 				</label>
 				<input
 					id="character-count-selector"
-					className="w-full"
+					className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
 					type="range"
 					min={a}
 					max={b}
