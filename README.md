@@ -6,9 +6,16 @@ This repository contains code to preview and build a web-based password generato
 
 ## Getting Started
 
-To get started, `cd` into the `frontend` folder, and then run the following to install the local dependencies.
+To get started, you will need to have your current working directory be the `front-end` folder, then install the local dependencies.
 
 ```bash
+# If not done so, yet
+cd /path/to/repo
+
+# CD into the front-end
+cd frontend
+
+# Install local dependencies
 npm install
 ```
 

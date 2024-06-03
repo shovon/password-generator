@@ -1,5 +1,7 @@
 # Questionnaire
+
 - How much time did it take you?
+
 - How did you think about testing your code?
 - How did you verify your solution meets the requirements?
 - What tradeoffs did you make and why?
