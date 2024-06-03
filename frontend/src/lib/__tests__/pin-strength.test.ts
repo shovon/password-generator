@@ -1,6 +1,6 @@
 import { calculateStrength } from "../pin-strength";
 
-describe("Entropy checker", () => {
+describe("Pin strength checker", () => {
 	it('should classify weak PINs as weak, good as "good" and "strong" as strong', () => {
 		expect(calculateStrength("1111")).toEqual("WEAK");
 		expect(calculateStrength("8068")).toEqual("GOOD");
