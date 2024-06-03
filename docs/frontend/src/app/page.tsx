@@ -279,6 +279,7 @@ export default React.memo(function Home() {
 				</div>
 				<div className="mb-4 relative">
 					<textarea
+						onChange={() => {}}
 						onMouseDown={(e) => {
 							navigator.clipboard.writeText(currentPassword);
 							toast(`${typesMap.get(passwordType)!} copied to clipboard!`, {
