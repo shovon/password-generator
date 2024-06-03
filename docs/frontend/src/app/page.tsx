@@ -14,6 +14,8 @@ import {
 import { randomInt } from "crypto";
 import { wordList } from "../lib/wordlist";
 import { getRandomInt } from "../lib/random";
+import { calculateStrength } from "../lib/pin-strength";
+import { entropy } from "../lib/entropy";
 
 const passwordTypes = either(exact("RANDOM"), exact("MEMORABLE"), exact("PIN"));
 
@@ -119,6 +121,36 @@ export default React.memo(function Home() {
 		setCurrentPassword(generatePassword());
 	}, [generatePassword]);
 
+	function getStrength() {
+		switch (passwordType) {
+			case "RANDOM":
+				if (entropy(currentPassword) * currentPassword.length < 19)
+					return <>Very weak</>;
+				if (entropy(currentPassword) * currentPassword.length < 28)
+					return <>Weak</>;
+				if (entropy(currentPassword) * currentPassword.length < 38)
+					return <>Good</>;
+				return <>Strong</>;
+			case "MEMORABLE":
+				if (entropy(currentPassword) * currentPassword.length < 19)
+					return <>Very weak</>;
+				if (entropy(currentPassword) * currentPassword.length < 28)
+					return <>Weak</>;
+				if (entropy(currentPassword) * currentPassword.length < 38)
+					return <>Good</>;
+				return <>Strong</>;
+			case "PIN":
+				switch (calculateStrength(currentPassword)) {
+					case "WEAK":
+						return <>Weak</>;
+					case "GOOD":
+						return <>Good</>;
+					case "STRONG":
+						return <>Strong</>;
+				}
+		}
+	}
+
 	function getOptions() {
 		switch (passwordType) {
 			case "RANDOM":
@@ -179,16 +211,14 @@ export default React.memo(function Home() {
 
 	return (
 		<main className="">
+			Strength: {getStrength()}
 			<input type="text" disabled value={currentPassword} />
-
 			<select value={passwordType} onChange={onPasswordTypeChange}>
 				<option value="RANDOM">Random</option>
 				<option value="MEMORABLE">Memorable</option>
 				<option value="PIN">PIN</option>
 			</select>
-
 			{getOptions()}
-
 			<button onClick={getNewPassword}>Generate</button>
 		</main>
 	);

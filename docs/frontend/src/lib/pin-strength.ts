@@ -10012,7 +10012,7 @@ const medianOfAllPins = median(frequencies);
 
 type StrengthType = "WEAK" | "GOOD" | "STRONG";
 
-function calculateStrength(pin: string): StrengthType {
+export function calculateStrength(pin: string): StrengthType {
 	const first4 = pin.slice(0, 4);
 
 	if (!pinsList.has(pin)) return "STRONG";
@@ -10020,7 +10020,7 @@ function calculateStrength(pin: string): StrengthType {
 		if (pin.length > 4) {
 			return "GOOD";
 		}
-		return "STRONG";
+		return "WEAK";
 	}
 
 	if (pin.length <= 4) {

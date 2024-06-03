@@ -1,9 +1,9 @@
 /**
- *
+ * Calculates Shannon's entropy
  * @param str The string for which to calculate the shannon entropy
  * @returns A number representing the total entropy
  */
-function entropy(str: string) {
+export function entropy(str: string) {
 	const len = str.length;
 
 	const frequencies = new Map<string, number>();
